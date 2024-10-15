@@ -8,29 +8,36 @@
   </style>
 </head>
 <body>
-  <img id="pictureUrl" width="25%">
-  <p id="userId"></p>
-  <p id="displayName"></p>
-  <p id="statusMessage"></p>
-  <p id="getDecodedIDToken"></p>
+  
   <script src="https://static.line-scdn.net/liff/edge/versions/2.9.0/sdk.js"></script>
   <script>
-    function runApp() {
-      liff.getProfile().then(profile => {
-        document.getElementById("pictureUrl").src = profile.pictureUrl;
-        document.getElementById("userId").innerHTML = '<b>UserId:</b> ' + profile.userId;
-        document.getElementById("displayName").innerHTML = '<b>DisplayName:</b> ' + profile.displayName;
-        document.getElementById("statusMessage").innerHTML = '<b>StatusMessage:</b> ' + profile.statusMessage;
-        document.getElementById("getDecodedIDToken").innerHTML = '<b>Email:</b> ' + liff.getDecodedIDToken().email;
-      }).catch(err => console.error(err));
-    }
-    liff.init({ liffId: "2006417426-GW9rWMKj" }, () => {
-      if (liff.isLoggedIn()) {
-        runApp()
-      } else {
-        liff.login();
+    /// Config Your LIFF ID Here
+    const liffId = "2006417426-GW9rWMKj";
+    /// Config Your LIFF ID Here
+    liff.ready
+      .then(() => {
+        if (liff.isLoggedIn()) {
+          return liff.getProfile();
+        } else {
+          liff.login({
+            redirectUri: "https://liff.line.me/2006417426-GW9rWMKj",
+          });
+        }
+      })
+      .then((profile) => {
+        window.location.replace(
+          `https://docs.google.com/forms/d/e/1FAIpQLScTuW5USnLn57hTCCICrgARjfagOaJ0TML05mq1_Qz3uocaig/viewform?usp=pp_url&entry.65756392=${profile.userId}&entry.294109537=${profile.displayName}`
+        );
+      });
+    liff.init(
+      {
+        liffId: liffId,
+      },
+      () => {},
+      (err) => {
+        window.alert(err);
       }
-    }, err => console.error(err.code, error.message));
+    );
   </script>
 </body>
 </html>
